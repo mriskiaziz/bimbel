@@ -1,0 +1,69 @@
+datasource db {
+  provider = "postgresql" // Anda dapat mengganti provider sesuai database yang Anda gunakan (misalnya mysql atau sqlite)
+  url      = env("DATABASE_URL") // URL database Anda
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model KategoriSoal {
+  id           String      @id @default(uuid()) // ID menggunakan UUID
+  namaKategori String
+  deskripsi    String?
+  paketSoals   PaketSoal[]
+  soals        Soal[] // Menambahkan relasi dengan Soal
+}
+
+model PaketSoal {
+  id              String       @id @default(uuid()) // ID menggunakan UUID
+  namaPaket       String
+  kategoriId      String
+  jumlahSoal      Int
+  tanggalDibuat   DateTime     @default(now())
+  tanggalBerakhir DateTime?
+  kategori        KategoriSoal @relation(fields: [kategoriId], references: [id])
+  soals           Soal[]
+  hasilScores     HasilScore[]
+}
+
+model Soal {
+  id           String       @id @default(uuid()) // ID menggunakan UUID
+  paketId      String
+  kategoriId   String
+  soal         String
+  opsiA        String
+  opsiB        String
+  opsiC        String
+  opsiD        String
+  jawabanBenar String
+  gambarUrl    String? // Kolom gambar_url
+  paket        PaketSoal    @relation(fields: [paketId], references: [id])
+  kategori     KategoriSoal @relation(fields: [kategoriId], references: [id])
+}
+
+model AkunPengguna {
+  id            String       @id @default(uuid()) // ID menggunakan UUID
+  username      String       @unique
+  password      String
+  role          Role
+  email         String?
+  nama          String
+  tanggalDaftar DateTime     @default(now())
+  hasilScores   HasilScore[]
+}
+
+enum Role {
+  admin
+  siswa
+}
+
+model HasilScore {
+  id      String       @id @default(uuid()) // ID menggunakan UUID
+  siswaId String
+  paketId String
+  score   Int
+  tanggal DateTime     @default(now())
+  siswa   AkunPengguna @relation(fields: [siswaId], references: [id])
+  paket   PaketSoal    @relation(fields: [paketId], references: [id])
+}

@@ -9,6 +9,7 @@ export default function Home() {
         onClick={() => {
           signOut();
         }}
+        className=" cursor-pointer"
       >
         LOGOUT
       </button>

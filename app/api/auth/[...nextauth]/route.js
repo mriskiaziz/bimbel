@@ -38,7 +38,12 @@ export const authOptions = {
         //   throw new Error("Invalid email or password");
         // }
 
-        return credentials;
+        return {
+          email: "admin@gmail.com",
+          role: "admin",
+          image: "rty",
+          name: "admin",
+        };
       },
     }),
   ],

@@ -40,12 +40,12 @@ export default function UjianPage() {
   // Function to determine the color for question numbers
   const getQuestionNumberColor = (index) => {
     if (markedAsRagu[index]) {
-      return "bg-yellow-500 hover:bg-yellow-800 dark:bg-yellow-600 dark:hover:bg-yellow-700 focus:outline-none dark:focus:ring-yellow-800 "; // Ragu-Ragu marked
+      return "bg-yellow-500 hover:bg-yellow-800 focus:outline-none "; // Ragu-Ragu marked
     }
     if (answers[index]) {
-      return "bg-green-500 hover:bg-green-800 dark:bg-green-600 dark:hover:bg-green-700 focus:outline-none dark:focus:ring-green-800"; // Answered
+      return "bg-green-500 hover:bg-green-800 focus:outline-none"; // Answered
     }
-    return "bg-gray-700 hover:bg-gray-800 dark:bg-gray-600 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800"; // Unanswered
+    return "bg-gray-700 hover:bg-gray-800 focus:outline-none"; // Unanswered
   };
 
   return (
@@ -59,12 +59,12 @@ export default function UjianPage() {
         <div className="grid grid-cols-3 gap-6 ">
           <div className="w-full col-span-2 space-y-3 ">
             {/* Current Question Section */}
-            <div className="flex w-full p-6 bg-white border border-gray-200 rounded-md shadow-sm dark:bg-gray-800 dark:border-gray-700 ">
+            <div className="flex w-full p-6 bg-white border border-gray-200 rounded-md shadow-sm  ">
               <div className="uppercase">SOAL NOMOR {currentQuestion + 1}</div>
               <div className="ms-auto">Waktu : </div>
             </div>
 
-            <div className="flex flex-col w-full p-6 bg-white border border-gray-200 shadow-sm dark:bg-gray-800 dark:border-gray-700">
+            <div className="flex flex-col w-full p-6 bg-white border border-gray-200 shadow-sm ">
               <div className="mb-5">{questions[currentQuestion].question}</div>
               <div>
                 {questions[currentQuestion].options.map((option, i) => (
@@ -85,16 +85,16 @@ export default function UjianPage() {
             </div>
 
             {/* Navigation buttons */}
-            <div className="flex w-full justify-between px-6 p-2 bg-white border border-gray-200 shadow-sm dark:bg-gray-800 dark:border-gray-700">
+            <div className="flex w-full justify-between px-6 p-2 bg-white border border-gray-200 shadow-sm ">
               <button
                 type="button"
-                className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-sm text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-sm text-sm px-5 py-2.5 focus:outline-none "
                 onClick={handlePrev}
               >
                 {"< Sebelumnya"}
               </button>
 
-              <div className="p-2 px-4 rounded-md bg-yellow-500 dark:bg-yellow-600 ">
+              <div className="p-2 px-4 rounded-md bg-yellow-500  ">
                 {/* Ragu-Ragu Checkbox */}
                 <input
                   type="checkbox"
@@ -106,7 +106,7 @@ export default function UjianPage() {
 
               <button
                 type="button"
-                className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-sm text-sm px-5 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-sm text-sm px-5 py-2.5 focus:outline-none "
                 onClick={handleNext}
               >
                 {"Selanjutnya >"}
@@ -115,7 +115,7 @@ export default function UjianPage() {
           </div>
 
           {/* Question number navigation */}
-          <div className="w-auto h-auto p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+          <div className="w-auto h-auto p-6 bg-white border border-gray-200 rounded-lg shadow-sm ">
             <div className="uppercase mb-4 ms-1">Nomor Soal</div>
 
             <div className="flex flex-wrap">
@@ -133,7 +133,7 @@ export default function UjianPage() {
               ))}
               <button
                 type="button"
-                className="m-1 uppercase text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:ring-gray-300 font-medium rounded-sm text-sm px-3 py-2 dark:bg-gray-600 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800"
+                className="m-1 uppercase text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:ring-gray-300 font-medium rounded-sm text-sm px-3 py-2 focus:outline-none "
               >
                 selesai
               </button>

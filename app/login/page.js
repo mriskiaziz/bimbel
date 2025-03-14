@@ -44,7 +44,7 @@ export default function Page() {
 
   return (
     <div>
-      <section className="bg-slate-300 ">
+      <section className="bg-slate-300 w-full h-screen ">
         <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
           <a
             href="#"

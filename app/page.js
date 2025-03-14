@@ -1,8 +1,11 @@
 "use client";
 import Image from "next/image";
 import { signOut } from "next-auth/react";
+import { useTheme } from "next-themes";
 
 export default function Home() {
+  const { theme, setTheme } = useTheme();
+
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <button
@@ -12,6 +15,15 @@ export default function Home() {
         className=" cursor-pointer"
       >
         LOGOUT
+      </button>
+
+      <button
+        onClick={() => {
+          theme == "dark" ? setTheme("light") : setTheme("dark");
+        }}
+        className=" cursor-pointer"
+      >
+        Thema :{theme}
       </button>
 
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">

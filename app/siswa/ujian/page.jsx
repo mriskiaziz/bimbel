@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import questions from "@/data/quetion"; // Correct the path if needed
 
 export default function UjianPage() {
@@ -9,6 +9,31 @@ export default function UjianPage() {
   const [markedAsRagu, setMarkedAsRagu] = useState(
     Array(questions.length).fill(false)
   );
+  const [timeLeft, setTimeLeft] = useState(0); // Waktu tersisa dalam detik
+  const [timerActive, setTimerActive] = useState(true);
+
+  // Tentukan waktu target (misalnya "10-03-2025 23:20")
+  const endTime = new Date("2025-03-14T23:23:00"); // Format: YYYY-MM-DDTHH:mm:ss
+
+  // Effect untuk menghitung waktu mundur dari waktu target
+  useEffect(() => {
+    // Fungsi untuk menghitung mundur waktu
+    const timerId = setInterval(() => {
+      const currentTime = new Date();
+      const timeRemaining = endTime - currentTime; // Selisih dalam milidetik
+
+      if (timeRemaining <= 0) {
+        clearInterval(timerId); // Hentikan timer jika waktu sudah habis
+        setTimeLeft(0);
+        handleSubmit(); // Ujian selesai setelah waktu habis
+      } else {
+        setTimeLeft(Math.floor(timeRemaining / 1000)); // Ubah ke detik
+      }
+    }, 1000);
+
+    // Bersihkan interval jika komponen dibersihkan
+    return () => clearInterval(timerId);
+  }, []); // Empty array sebagai dependency untuk hanya memulai effect saat komponen pertama kali dimuat
 
   // Handle radio button change
   const handleAnswerChange = (questionIndex, selectedAnswer) => {
@@ -45,13 +70,19 @@ export default function UjianPage() {
     if (answers[index]) {
       return "bg-green-500 hover:bg-green-800 focus:outline-none"; // Answered
     }
-    return "bg-gray-700 hover:bg-gray-800 focus:outline-none"; // Unanswered
+    return "bg-gray-500 hover:bg-gray-800 focus:outline-none"; // Unanswered
+  };
+
+  const formatTime = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds < 10 ? "0" : ""}${remainingSeconds}`;
   };
 
   return (
     <div className="flex flex-col w-full">
-      <div className="flex w-full p-7 bg-blue-600 ">
-        <div className="text-xl font-bold">Siswa</div>
+      <div className="flex w-full p-7 bg-blue-700 text-white ">
+        <div className="text-xl font-bold">Simulasi Ujian CAT</div>
         <div className="ms-auto">Detail</div>
       </div>
 
@@ -59,9 +90,16 @@ export default function UjianPage() {
         <div className="grid grid-cols-3 gap-6 ">
           <div className="w-full col-span-2 space-y-3 ">
             {/* Current Question Section */}
-            <div className="flex w-full p-6 bg-white border border-gray-200 rounded-md shadow-sm  ">
-              <div className="uppercase">SOAL NOMOR {currentQuestion + 1}</div>
-              <div className="ms-auto">Waktu : </div>
+            <div className="flex w-full p-6 bg-white border border-gray-200 rounded-md shadow-sm items-center">
+              <div className="uppercase flex items-center">
+                SOAL NOMOR
+                <div className="bg-blue-700 text-white py-2 px-3 ms-2 w-fit">
+                  {currentQuestion + 1}
+                </div>
+              </div>
+              <div className="ms-auto">
+                Waktu Tersisa: {formatTime(timeLeft)}
+              </div>
             </div>
 
             <div className="flex flex-col w-full p-6 bg-white border border-gray-200 shadow-sm ">
@@ -125,7 +163,7 @@ export default function UjianPage() {
                   key={i}
                   className={`m-1 w-12 h-12 text-white ${getQuestionNumberColor(
                     i
-                  )} font-medium rounded-sm text-sm px-3 py-2 `}
+                  )} font-medium rounded-sm text-sm px-3 py-2`}
                   onClick={() => setCurrentQuestion(i)}
                 >
                   {i + 1}
@@ -133,7 +171,7 @@ export default function UjianPage() {
               ))}
               <button
                 type="button"
-                className="m-1 uppercase text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:ring-gray-300 font-medium rounded-sm text-sm px-3 py-2 focus:outline-none "
+                className="m-1 uppercase text-white bg-gray-500 hover:bg-gray-800 focus:ring-4 focus:ring-gray-300 font-medium rounded-sm text-sm px-3 py-2 focus:outline-none "
               >
                 selesai
               </button>

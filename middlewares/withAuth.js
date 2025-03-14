@@ -20,7 +20,7 @@ export default function withAuth(middleware, requireAuth = []) {
       const token = await getToken({ req, secret });
 
       if (token) {
-        let url = new URL(`/admin`, req.url);
+        let url = new URL(`/${token.role}`, req.url);
         return NextResponse.redirect(url);
       } else {
         const response = NextResponse.next();
@@ -36,8 +36,10 @@ export default function withAuth(middleware, requireAuth = []) {
         const url = new URL("/login", req.url);
         return NextResponse.redirect(url);
       } else {
-        // const url = new URL(`/admin`, req.url);
-        return NextResponse.next();
+        if (!pathname.startsWith(`/${token.role}`)) {
+          const url = new URL(`/${token.role}`, req.url);
+          return NextResponse.redirect(url);
+        }
       }
     }
     return middleware(req, next);

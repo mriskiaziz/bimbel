@@ -12,12 +12,6 @@ export default function AdminPage() {
 
 const soal = [
   {
-    name: "id",
-    type: "uuid",
-    label: "ID",
-    key: "id",
-  },
-  {
     name: "paketId",
     type: "uuid",
     label: "Paket ID",
@@ -70,17 +64,5 @@ const soal = [
     type: "text",
     label: "Gambar URL",
     key: "gambarUrl",
-  },
-  {
-    name: "paket",
-    type: "relation",
-    label: "Paket",
-    key: "paket",
-  },
-  {
-    name: "kategori",
-    type: "relation",
-    label: "Kategori",
-    key: "kategori",
   },
 ];

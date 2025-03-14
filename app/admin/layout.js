@@ -99,6 +99,10 @@ const navbar_list = [
     text: "hasil score",
     link: "/admin/hasil-score",
   },
+  {
+    text: "akun",
+    link: "/admin/akun",
+  },
 ];
 
 export default LayoutAdmin;

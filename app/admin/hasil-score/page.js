@@ -12,12 +12,6 @@ export default function AdminPage() {
 
 const hasilScore = [
   {
-    name: "id",
-    type: "uuid",
-    label: "ID",
-    key: "id",
-  },
-  {
     name: "siswaId",
     type: "uuid",
     label: "Siswa ID",
@@ -34,23 +28,5 @@ const hasilScore = [
     type: "number",
     label: "Score",
     key: "score",
-  },
-  {
-    name: "tanggal",
-    type: "datetime",
-    label: "Tanggal",
-    key: "tanggal",
-  },
-  {
-    name: "siswa",
-    type: "relation",
-    label: "Siswa",
-    key: "siswa",
-  },
-  {
-    name: "paket",
-    type: "relation",
-    label: "Paket",
-    key: "paket",
   },
 ];

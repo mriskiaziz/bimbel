@@ -12,12 +12,6 @@ export default function AdminPage() {
 
 const paketSoal = [
   {
-    name: "id",
-    type: "uuid",
-    label: "ID",
-    key: "id",
-  },
-  {
     name: "namaPaket",
     type: "text",
     label: "Nama Paket",
@@ -36,33 +30,9 @@ const paketSoal = [
     key: "jumlahSoal",
   },
   {
-    name: "tanggalDibuat",
-    type: "datetime",
-    label: "Tanggal Dibuat",
-    key: "tanggalDibuat",
-  },
-  {
     name: "tanggalBerakhir",
     type: "datetime",
     label: "Tanggal Berakhir",
     key: "tanggalBerakhir",
-  },
-  {
-    name: "kategori",
-    type: "relation",
-    label: "Kategori",
-    key: "kategori",
-  },
-  {
-    name: "soals",
-    type: "array",
-    label: "Soals",
-    key: "soals",
-  },
-  {
-    name: "hasilScores",
-    type: "array",
-    label: "Hasil Score",
-    key: "hasilScores",
   },
 ];

@@ -17,14 +17,14 @@ export default function Home() {
         LOGOUT
       </button>
 
-      {/* <button
+      <button
         onClick={() => {
           theme == "dark" ? setTheme("light") : setTheme("dark");
         }}
         className=" cursor-pointer"
       >
         Thema :{theme}
-      </button> */}
+      </button>
 
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
         <Image

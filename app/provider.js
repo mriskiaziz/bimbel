@@ -15,5 +15,9 @@ export const Provider = ({ children, session }) => {
     return <SessionProvider session={session}>{children}</SessionProvider>;
   }
 
-  return <SessionProvider session={session}>{children}</SessionProvider>;
+  return (
+    <ThemeProvider attribute="class" defaultTheme="light">
+      <SessionProvider session={session}>{children}</SessionProvider>
+    </ThemeProvider>
+  );
 };

@@ -44,10 +44,10 @@ model Soal {
 
 model AkunPengguna {
   id            String       @id @default(uuid()) // ID menggunakan UUID
-  username      String       @unique
+  username      String
   password      String
   role          Role
-  email         String?
+  email         String?      @unique
   nama          String
   tanggalDaftar DateTime     @default(now())
   hasilScores   HasilScore[]

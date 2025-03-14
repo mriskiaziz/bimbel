@@ -21,37 +21,38 @@ export const authOptions = {
           throw new Error("Email and password required");
         }
 
-        // const user = await prisma.Akun.findUnique({
-        //   where: { email: credentials.email },
-        // });
+        const user = await prisma.akunPengguna.findUnique({
+          where: { email: credentials.email },
+        });
 
-        // if (!user || !user.password) {
-        //   throw new Error("Invalid email or password");
-        // }
+        if (!user || !user.password) {
+          throw new Error("Invalid email or password");
+        }
 
-        // const isValidPassword = await bcrypt.compare(
-        //   credentials.password,
-        //   user.password
-        // );
+        const isValidPassword = await bcrypt.compare(
+          credentials.password,
+          user.password
+        );
 
-        // if (!isValidPassword) {
-        //   throw new Error("Invalid email or password");
-        // }
+        if (!isValidPassword) {
+          throw new Error("Invalid email or password");
+        }
 
-        // return user;
-        return {
-          email: "admin@gmail.com",
-          role: "admin",
-          image: "rty",
-          name: "admin",
-          access_token: "some_access_token",
-        };
+        return user;
+        // return {
+        //   email: "admin@gmail.com",
+        //   role: "admin",
+        //   image: "rty",
+        //   name: "admin",
+        //   access_token: "some_access_token",
+        // };
       },
     }),
   ],
   callbacks: {
     async jwt({ token, user, account }) {
-      console.log(token);
+      console.log(user);
+      
       if (user) {
         token.role = user.role;
         token.image = user.image;
@@ -61,7 +62,7 @@ export const authOptions = {
       return token;
     },
     async session({ session, token }) {
-      console.log(session);
+      
       session.accessToken = token.accessToken;
       session.user.role = token.role;
       session.user.image = token.image;

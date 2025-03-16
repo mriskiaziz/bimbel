@@ -6,22 +6,32 @@ export default function AddDataComponent({ listInput, collectionName }) {
   const [forms, setForms] = useState({});
   const [loadingUpload, setLoadingUpload] = useState(false);
   const [isPostData, setIsPostData] = useState(false);
-  const [globaldata, setglobalData] = useState([]);
+  const [globaldata, setGlobalData] = useState([]);
+  const [method, setMethod] = useState("POST");
+  const [selectOptions, setSelectOptions] = useState({});
 
   useEffect(() => {
     const fetchItems = async () => {
       const res = await fetch(`/api/items?collectionName=${collectionName}`);
       const data = await res.json();
-      setglobalData(data);
+      setGlobalData(data);
 
       const initialFormState = listInput.reduce((acc, curr) => {
         acc[curr.name] = "";
         return acc;
       }, {});
 
-      collectionName == "dataDiri"
-        ? setForms(data[0])
-        : setForms(initialFormState);
+      collectionName === "dataDiri" ? setForms(data[0]) : setForms(initialFormState);
+
+      // Check if any input requires a dynamic select
+      const selectInputs = listInput.filter(input => input.type === "select");
+      for (const input of selectInputs) {
+        if (input.api != "role") {
+        const apiRes = await fetch(`/api/items?collectionName=${input.api}`);
+        const apiData = await apiRes.json();
+        setSelectOptions(prev => ({ ...prev, [input.name]: apiData }));
+      }
+      }
     };
 
     fetchItems();
@@ -30,25 +40,26 @@ export default function AddDataComponent({ listInput, collectionName }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoadingUpload(true);
-    // console.log(forms);
 
     const pushData = new FormData();
     pushData.append("data", JSON.stringify(forms));
     pushData.append("collection", JSON.stringify(collectionName));
 
-    if (collectionName == "dataDiri") {
+    if (method === "PUT") {
       pushData.append("id", forms.id);
+
       const res = await fetch("/api/items", {
         method: "PUT",
         body: pushData,
       });
 
       if (res.ok) {
-        alert("Berhasil");
+        alert("Update berhasil");
         setIsPostData(!isPostData);
       } else {
-        alert("Gagal");
+        alert("Update gagal");
       }
+      setIsPostData(!isPostData);
     } else {
       const res = await fetch("/api/items", {
         method: "POST",
@@ -56,14 +67,19 @@ export default function AddDataComponent({ listInput, collectionName }) {
       });
 
       if (res.ok) {
-        alert("Berhasil");
+        alert("Data berhasil ditambahkan");
         setIsPostData(!isPostData);
       } else {
-        alert("Gagal");
+        alert("Data gagal ditambahkan");
       }
     }
 
     setLoadingUpload(false);
+  };
+
+  const startEditing = (item) => {
+    setForms(item);
+    setMethod("PUT");
   };
 
   const handleDeleteItem = async (id, imageUrl) => {
@@ -79,15 +95,13 @@ export default function AddDataComponent({ listInput, collectionName }) {
   };
 
   return (
-    <div className=" block border border-black dark:border-white p-2 lg:p-8 mb-7 ">
+    <div className="block p-2 lg:p-8 mb-7">
       <h1 className="capitalize font-bold text-xl mb-4">{collectionName}</h1>
 
       <form onSubmit={handleSubmit} className="grid md:gap-4 md:grid-cols-3">
         {listInput.map((input, index) => (
           <div
-            className={` mb-4 md:mb-0 ${
-              input.type == "textarea" && "md:col-span-3"
-            }`}
+            className={`mb-4 md:mb-0 ${input.type === "textarea" && "md:col-span-3"}`}
             key={index}
           >
             <label
@@ -101,21 +115,38 @@ export default function AddDataComponent({ listInput, collectionName }) {
                 id={input.name}
                 name={input.name}
                 value={forms[input.name] || ""}
-                onChange={(e) =>
-                  setForms({ ...forms, [input.name]: e.target.value })
-                }
+                onChange={(e) => setForms({ ...forms, [input.name]: e.target.value })}
                 className="w-full h-44 p-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder={`Masukkan ${input.name}`}
               />
+            ) : input.type === "select" ? (
+              <select
+                id={input.name}
+                name={input.name}
+                value={forms[input.name] || ""}
+                onChange={(e) => setForms({ ...forms, [input.name]: e.target.value })}
+                className="w-full p-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Pilih {input.name}</option>
+                {
+                  input.api == "role" ? (
+                    ["admin", "siswa"].map((option, idx) => (
+                      <option key={idx} value={option}>{option}</option>
+                    ))
+                  ) : (
+                    selectOptions[input.name]?.map((option, idx) => (
+                      <option key={idx} value={option.id}>{option[input.indicator]}</option>
+                    ))
+                  )
+                }
+              </select>
             ) : (
               <input
                 type={input.type}
                 id={input.name}
                 name={input.name}
                 value={forms[input.name] || ""}
-                onChange={(e) =>
-                  setForms({ ...forms, [input.name]: e.target.value })
-                }
+                onChange={(e) => setForms({ ...forms, [input.name]: e.target.value })}
                 className="w-full p-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder={`Masukkan ${input.name}`}
               />
@@ -125,37 +156,35 @@ export default function AddDataComponent({ listInput, collectionName }) {
 
         <button
           type="submit"
-          className="w-full mt-4 bg-prime bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full col-end-2 mt-4 bg-prime bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
           disabled={loadingUpload}
         >
           {loadingUpload ? "Loading..." : "Submit"}
         </button>
       </form>
 
-      {collectionName != "dataDiri" && (
+      {collectionName !== "dataDiri" && (
         <div className="block overflow-x-auto whitespace-normal my-8">
           <TableComponent
             columns={listInput}
             data={globaldata}
             action={true}
-            actionFunct={(item) => {
-              return (
-                <td className="border p-2">
-                  <button
-                    onClick={() => startEditing(item)}
-                    className="bg-green-500 text-white p-2 mr-2"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDeleteItem(item.id, item.imageUrl)}
-                    className="bg-red-500 text-white p-2 mr-2"
-                  >
-                    Delete
-                  </button>
-                </td>
-              );
-            }}
+            actionFunct={(item) => (
+              <td className="border p-2 whitespace-nowrap">
+                <button
+                  onClick={() => startEditing(item)}
+                  className="bg-green-500 text-white p-2 mr-2 cursor-pointer"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => handleDeleteItem(item.id, item.imageUrl)}
+                  className="bg-red-500 text-white p-2 mr-2 cursor-pointer"
+                >
+                  Delete
+                </button>
+              </td>
+            )}
           />
         </div>
       )}

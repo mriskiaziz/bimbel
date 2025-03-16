@@ -4,7 +4,7 @@ import AddDataComponent from "@/components/AddData/addData";
 
 export default function AdminPage() {
   return (
-    <div className="container lg:px-24">
+    <div className="container">
       <AddDataComponent listInput={hasilScore} collectionName={`hasilScore`} />
     </div>
   );
@@ -13,15 +13,19 @@ export default function AdminPage() {
 const hasilScore = [
   {
     name: "siswaId",
-    type: "uuid",
+    type: "select",
     label: "Siswa ID",
     key: "siswaId",
+    api: "akunPengguna",
+    indicator: "email",
   },
   {
     name: "paketId",
-    type: "uuid",
+    type: "select",
     label: "Paket ID",
     key: "paketId",
+    api: "PaketSoal",
+    indicator: "namaPaket",
   },
   {
     name: "score",

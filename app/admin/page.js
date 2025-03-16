@@ -4,7 +4,7 @@ import AddDataComponent from "@/components/AddData/addData";
 
 export default function AdminPage() {
   return (
-    <div className="container lg:px-24">
+    <div className="container">
       <AddDataComponent
         listInput={kategoriSoal}
         collectionName={`kategoriSoal`}

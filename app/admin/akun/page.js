@@ -4,7 +4,7 @@ import AddDataComponent from "@/components/AddData/addData";
 
 export default function AdminPage() {
   return (
-    <div className="container lg:px-24">
+    <div className="container">
       <AddDataComponent
         listInput={akunPengguna}
         collectionName={`akunPengguna`}
@@ -28,9 +28,10 @@ const akunPengguna = [
   },
   {
     name: "role",
-    type: "text",
+    type: "select",
     label: "role",
     key: "role",
+    api: "role",
   },
   {
     name: "email",

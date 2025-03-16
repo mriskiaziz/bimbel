@@ -51,8 +51,6 @@ export const authOptions = {
   ],
   callbacks: {
     async jwt({ token, user, account }) {
-      console.log(user);
-      
       if (user) {
         token.role = user.role;
         token.image = user.image;
@@ -62,7 +60,6 @@ export const authOptions = {
       return token;
     },
     async session({ session, token }) {
-      
       session.accessToken = token.accessToken;
       session.user.role = token.role;
       session.user.image = token.image;
@@ -75,4 +72,3 @@ export const authOptions = {
 const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };
-

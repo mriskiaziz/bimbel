@@ -4,7 +4,7 @@ import AddDataComponent from "@/components/AddData/addData";
 
 export default function AdminPage() {
   return (
-    <div className="container lg:px-24">
+    <div className="container ">
       <AddDataComponent listInput={paketSoal} collectionName={`paketSoal`} />
     </div>
   );
@@ -19,9 +19,11 @@ const paketSoal = [
   },
   {
     name: "kategoriId",
-    type: "uuid",
+    type: "select",
     label: "Kategori ID",
     key: "kategoriId",
+    api: "kategoriSoal",
+    indicator: "namaKategori",
   },
   {
     name: "jumlahSoal",

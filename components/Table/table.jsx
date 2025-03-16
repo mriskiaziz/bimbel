@@ -22,7 +22,7 @@ export default function TableComponent({ data, columns, action, actionFunct }) {
             ))}
 
             {action && (
-              <th scope="col" className="px-6 py-3 border">
+              <th scope="col" className="px-6 py-3 border text-nowrap">
                 Actions
               </th>
             )}

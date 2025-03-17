@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import questions from "@/data/quetion"; // Pastikan path benar
+// import questions from "@/data/quetion"; // Pastikan path benar
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import Swal from "sweetalert2";
@@ -10,7 +10,7 @@ import { signOut } from "next-auth/react";
 export default function UjianPage() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [endTime, setendTime] = useState(new Date());
-  // const [questions, setquestions] = useState([]);
+  const [questions, setquestions] = useState([]);
   const [answers, setAnswers] = useState(Array(questions.length).fill(null));
   const [logout, setlogout] = useState(false);
   const [markedAsRagu, setMarkedAsRagu] = useState(
@@ -42,7 +42,8 @@ export default function UjianPage() {
 
         const soal = await fetch(`/api/soal?paketId=${scorejson.paketId}`);
         const soaljson = await soal.json();
-        // setquestions(soaljson);
+
+        setquestions(soaljson);
       } catch (error) {
         console.error("Error fetching score:", error);
       }
@@ -75,7 +76,9 @@ export default function UjianPage() {
 
   // Handle Submit
   const handleSubmit = () => {
-    router.push("/siswa/hasil");
+    console.log(answers);
+
+    // router.push("/siswa/hasil");
   };
 
   // Handle radio button change
@@ -137,13 +140,13 @@ export default function UjianPage() {
 
   return (
     <div className="flex flex-col w-full bg-slate-200 h-full md:h-screen">
-      <div className="flex w-full p-7 bg-blue-700 text-white">
+      <div className="flex w-full p-7 items-center bg-blue-700 text-white">
         <div className="text-2xl font-bold">Simulasi Ujian CAT</div>
         <div className="ms-auto flex space-x-3">
           {data && (
             <>
               <div>
-                <div className="flex flex-col">
+                <div className="flex-col hidden md:flex ">
                   <div className="ms-auto">{data.user.name}</div>
                   <div className="ms-auto">{data.user.email}</div>
                 </div>
@@ -179,36 +182,40 @@ export default function UjianPage() {
         <div className="grid grid-cols-3 gap-6 ">
           <div className="w-full col-span-3 md:col-span-2 space-y-3 ">
             {/* Current Question Section */}
-            <div className="flex w-full p-6 bg-white border border-gray-200 rounded-md shadow-sm items-center">
+            <div className="flex flex-col md:flex-row w-full space-y-3 md:space-y-0 p-6 bg-white border border-gray-200 rounded-md shadow-sm md:items-center">
               <div className="uppercase flex items-center font-semibold">
                 SOAL NOMOR
                 <div className="bg-blue-700 text-white py-2 px-3 ms-2 w-fit">
                   {currentQuestion + 1}
                 </div>
               </div>
-              <div className="ms-auto font-semibold">
+              <div className=" flex md:ms-auto font-semibold">
                 Waktu Tersisa: {formatTime(timeLeft)}
               </div>
             </div>
 
             <div className="flex flex-col w-full p-6 bg-white border border-gray-200 shadow-sm ">
-              <div className="mb-5">{questions[currentQuestion].question}</div>
-              <div>
-                {questions[currentQuestion].options.map((option, i) => (
-                  <div key={i}>
-                    <input
-                      type="radio"
-                      name={`question${currentQuestion}`}
-                      value={option}
-                      checked={answers[currentQuestion] === option}
-                      onChange={() =>
-                        handleAnswerChange(currentQuestion, option)
-                      }
-                    />
-                    <label className="ms-2">{option}</label>
+              {questions.length != 0 && (
+                <>
+                  <div className="mb-5">{questions[currentQuestion].soal}</div>
+                  <div>
+                    {questions[currentQuestion].opsi.map((option, i) => (
+                      <div key={i}>
+                        <input
+                          type="radio"
+                          name={`question${currentQuestion}`}
+                          value={option}
+                          checked={answers[currentQuestion] === option}
+                          onChange={() =>
+                            handleAnswerChange(currentQuestion, option)
+                          }
+                        />
+                        <label className="ms-2">{option}</label>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
+                </>
+              )}
             </div>
 
             {/* Navigation buttons */}
@@ -276,7 +283,7 @@ export default function UjianPage() {
                     }
                   });
                 }}
-                className="m-1 uppercase cursor-pointer text-white bg-gray-500 hover:bg-gray-800 focus:ring-4 focus:ring-gray-300 font-medium rounded-sm text-sm px-3 py-2 focus:outline-none "
+                className="m-1 uppercase cursor-pointer text-white bg-green-500 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-sm text-sm px-3 py-2 focus:outline-none "
               >
                 selesai
               </button>

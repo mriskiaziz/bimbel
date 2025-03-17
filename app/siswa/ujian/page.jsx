@@ -2,22 +2,19 @@
 
 import { useState, useEffect } from "react";
 import questions from "@/data/quetion"; // Correct the path if needed
+import { useRouter } from "next/navigation";
 
 export default function UjianPage() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [endTime, setendTime] = useState(new Date("2025-03-14T23:23:00"));
   const [answers, setAnswers] = useState(Array(questions.length).fill(null));
   const [markedAsRagu, setMarkedAsRagu] = useState(
     Array(questions.length).fill(false)
   );
-  const [timeLeft, setTimeLeft] = useState(0); // Waktu tersisa dalam detik
-  const [timerActive, setTimerActive] = useState(true);
+  const [timeLeft, setTimeLeft] = useState(0);
+  const router = useRouter();
 
-  // Tentukan waktu target (misalnya "10-03-2025 23:20")
-  const endTime = new Date("2025-03-14T23:23:00"); // Format: YYYY-MM-DDTHH:mm:ss
-
-  // Effect untuk menghitung waktu mundur dari waktu target
   useEffect(() => {
-    // Fungsi untuk menghitung mundur waktu
     const timerId = setInterval(() => {
       const currentTime = new Date();
       const timeRemaining = endTime - currentTime; // Selisih dalam milidetik
@@ -34,6 +31,11 @@ export default function UjianPage() {
     // Bersihkan interval jika komponen dibersihkan
     return () => clearInterval(timerId);
   }, []); // Empty array sebagai dependency untuk hanya memulai effect saat komponen pertama kali dimuat
+
+  // Handle Submit
+  const handleSubmit = () => {
+    router.push(`/siswa/hasil`);
+  };
 
   // Handle radio button change
   const handleAnswerChange = (questionIndex, selectedAnswer) => {

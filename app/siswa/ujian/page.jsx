@@ -9,93 +9,90 @@ import { signOut } from "next-auth/react";
 
 export default function UjianPage() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [endTime, setendTime] = useState(new Date());
-  const [questions, setquestions] = useState([]);
-  const [answers, setAnswers] = useState(Array(questions.length).fill(null));
-  const [logout, setlogout] = useState(false);
-  const [markedAsRagu, setMarkedAsRagu] = useState(
-    Array(questions.length).fill(false)
-  );
+  const [endTime, setEndTime] = useState(new Date());
+  const [questions, setQuestions] = useState([]);
+  const [answers, setAnswers] = useState([]);
+  const [markedAsRagu, setMarkedAsRagu] = useState([]);
+  const [kunciJawaban, setKunciJawaban] = useState([]);
+  const [logout, setLogout] = useState(false);
   const [timeLeft, setTimeLeft] = useState(0);
   const [dataScore, setDataScore] = useState(null);
   const router = useRouter();
   const { data } = useSession();
 
   useEffect(() => {
-    // Fungsi async untuk mengambil data
     const fetchData = async () => {
       try {
         const score = await fetch(`/api/score?siswaId=${data.user.id}`);
         const scorejson = await score.json();
         setDataScore(scorejson);
 
-        // Mengecek apakah tanggal ujian sudah lewat
         const examDate = new Date(scorejson.tanggal);
         const currentDate = new Date();
 
-        // Jika tanggal ujian lebih kecil dari hari ini, langsung arahkan ke hasil
         if (examDate < currentDate) {
           router.push("/siswa/hasil");
         } else {
-          setendTime(examDate); // Set waktu ujian jika belum lewat
+          setEndTime(examDate);
         }
 
         const soal = await fetch(`/api/soal?paketId=${scorejson.paketId}`);
         const soaljson = await soal.json();
-
-        setquestions(soaljson);
+        const kj = soaljson.map((e) => {
+          return e.jawabanBenar;
+        });
+        setQuestions(soaljson);
+        setKunciJawaban(kj);
+        setAnswers(Array(soaljson.length).fill(null)); // Initialize answers with null for each question
+        setMarkedAsRagu(Array(soaljson.length).fill(false)); // Initialize markedAsRagu with false for each question
       } catch (error) {
-        console.error("Error fetching score:", error);
+        console.error("Error fetching data:", error);
       }
     };
 
     if (data?.user?.id) {
       fetchData();
     }
-  }, [data?.user?.id, router]); // Hanya jalankan jika data user ada
+  }, [data?.user?.id, router]);
 
   useEffect(() => {
     const timerId = setInterval(() => {
       const currentTime = new Date();
-      const timeRemaining = endTime - currentTime; // Selisih dalam milidetik
+      const timeRemaining = endTime - currentTime;
 
       if (timeRemaining <= 0) {
-        clearInterval(timerId); // Hentikan timer jika waktu sudah habis
+        clearInterval(timerId);
         setTimeLeft(0);
         if (dataScore) {
-          handleSubmit(); // Ujian selesai setelah waktu habis
+          handleSubmit();
         }
       } else {
-        setTimeLeft(Math.floor(timeRemaining / 1000)); // Ubah ke detik
+        setTimeLeft(Math.floor(timeRemaining / 1000)); // Update timeLeft in seconds
       }
     }, 1000);
 
-    // Bersihkan interval jika komponen dibersihkan
     return () => clearInterval(timerId);
-  }, [endTime]); // Menambahkan `endTime` agar timer berjalan sesuai waktu yang diterima
+  }, [endTime]);
 
-  // Handle Submit
   const handleSubmit = () => {
     console.log(answers);
+    console.log(kunciJawaban);
 
     // router.push("/siswa/hasil");
   };
 
-  // Handle radio button change
-  const handleAnswerChange = (questionIndex, selectedAnswer) => {
+  const handleAnswerChange = (questionIndex, selectedIndex) => {
     const newAnswers = [...answers];
-    newAnswers[questionIndex] = selectedAnswer;
+    newAnswers[questionIndex] = selectedIndex;
     setAnswers(newAnswers);
   };
 
-  // Handle "Ragu-Ragu" checkbox change
   const handleRaguChange = (questionIndex) => {
     const newRaguStatus = [...markedAsRagu];
     newRaguStatus[questionIndex] = !newRaguStatus[questionIndex];
     setMarkedAsRagu(newRaguStatus);
   };
 
-  // Handle navigation between questions
   const handleNext = () => {
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
@@ -108,25 +105,22 @@ export default function UjianPage() {
     }
   };
 
-  // Function to determine the color for question numbers
   const getQuestionNumberColor = (index) => {
     if (markedAsRagu[index]) {
-      return "bg-yellow-500 hover:bg-yellow-800 focus:outline-none "; // Ragu-Ragu marked
+      return "bg-yellow-500 hover:bg-yellow-800 focus:outline-none ";
     }
-    if (answers[index]) {
-      return "bg-green-500 hover:bg-green-800 focus:outline-none"; // Answered
+    if (answers[index] !== null) {
+      return "bg-green-500 hover:bg-green-800 focus:outline-none";
     }
     return `${
-      currentQuestion == index ? "bg-gray-800" : "bg-gray-500"
-    } hover:bg-gray-800 focus:outline-none`; // Unanswered
+      currentQuestion === index ? "bg-gray-800" : "bg-gray-500"
+    } hover:bg-gray-800 focus:outline-none`;
   };
 
   const formatTime = (seconds) => {
-    const hours = Math.floor(seconds / 3600); // Menghitung jam
-    const minutes = Math.floor((seconds % 3600) / 60); // Menghitung menit
-    const remainingSeconds = seconds % 60; // Menghitung detik
-
-    // Format jam, menit, dan detik menjadi string dengan 2 digit untuk menit dan detik
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const remainingSeconds = seconds % 60;
     return `${hours}:${minutes < 10 ? "0" : ""}${minutes}:${
       remainingSeconds < 10 ? "0" : ""
     }${remainingSeconds}`;
@@ -155,7 +149,7 @@ export default function UjianPage() {
                 <div className="inline-flex items-center justify-center w-12 h-12 text-white bg-blue-500 rounded-full">
                   <span
                     className="text-xl font-semibold cursor-pointer"
-                    onClick={() => setlogout(!logout)}
+                    onClick={() => setLogout(!logout)}
                   >
                     {getInitials(data.user.name)}
                   </span>
@@ -165,7 +159,7 @@ export default function UjianPage() {
                         onClick={() => {
                           signOut();
                         }}
-                        className=" flex cursor-pointer justify-center px-3 py-2 text-sm font-medium text-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
+                        className="flex cursor-pointer justify-center px-3 py-2 text-sm font-medium text-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
                       >
                         Logout
                       </button>
@@ -179,8 +173,8 @@ export default function UjianPage() {
       </div>
 
       <div className="p-7">
-        <div className="grid grid-cols-3 gap-6 ">
-          <div className="w-full col-span-3 md:col-span-2 space-y-3 ">
+        <div className="grid grid-cols-3 gap-6">
+          <div className="w-full col-span-3 md:col-span-2 space-y-3">
             {/* Current Question Section */}
             <div className="flex flex-col md:flex-row w-full space-y-3 md:space-y-0 p-6 bg-white border border-gray-200 rounded-md shadow-sm md:items-center">
               <div className="uppercase flex items-center font-semibold">
@@ -189,13 +183,13 @@ export default function UjianPage() {
                   {currentQuestion + 1}
                 </div>
               </div>
-              <div className=" flex md:ms-auto font-semibold">
+              <div className="flex md:ms-auto font-semibold">
                 Waktu Tersisa: {formatTime(timeLeft)}
               </div>
             </div>
 
             <div className="flex flex-col w-full p-6 bg-white border border-gray-200 shadow-sm ">
-              {questions.length != 0 && (
+              {questions.length !== 0 && (
                 <>
                   <div className="mb-5">{questions[currentQuestion].soal}</div>
                   <div>
@@ -204,10 +198,10 @@ export default function UjianPage() {
                         <input
                           type="radio"
                           name={`question${currentQuestion}`}
-                          value={option}
-                          checked={answers[currentQuestion] === option}
+                          value={i}
+                          checked={answers[currentQuestion] === i} // Ensure the radio button is checked if the answer matches
                           onChange={() =>
-                            handleAnswerChange(currentQuestion, option)
+                            handleAnswerChange(currentQuestion, i)
                           }
                         />
                         <label className="ms-2">{option}</label>
@@ -219,29 +213,30 @@ export default function UjianPage() {
             </div>
 
             {/* Navigation buttons */}
-            <div className="flex w-full justify-between px-6 p-2 bg-white border border-gray-200 shadow-sm ">
+            <div className="flex w-full justify-between px-6 p-2 bg-white border border-gray-200 shadow-sm">
               <button
                 type="button"
-                className="text-white cursor-pointer text-sm text-nowrap bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-sm px-5 py-2.5 focus:outline-none "
+                className="text-white cursor-pointer text-sm text-nowrap bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-sm px-5 py-2.5 focus:outline-none"
                 onClick={handlePrev}
               >
                 {"< Prev"}
               </button>
 
-              <div className="p-2 px-4 rounded-md bg-yellow-500 ">
-                {/* Ragu-Ragu Checkbox */}
-                <input
-                  type="checkbox"
-                  className=" cursor-pointer"
-                  checked={markedAsRagu[currentQuestion]}
-                  onChange={() => handleRaguChange(currentQuestion)}
-                />
-                <label className="ms-2 uppercase">Ragu</label>
-              </div>
+              {markedAsRagu.length != 0 && (
+                <div className="p-2 px-4 rounded-md bg-yellow-500">
+                  <input
+                    type="checkbox"
+                    className="cursor-pointer"
+                    checked={markedAsRagu[currentQuestion]}
+                    onChange={() => handleRaguChange(currentQuestion)}
+                  />
+                  <label className="ms-2 uppercase">Ragu</label>
+                </div>
+              )}
 
               <button
                 type="button"
-                className="text-white cursor-pointer text-nowrap bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-sm text-sm px-5 py-2.5 focus:outline-none "
+                className="text-white cursor-pointer text-nowrap bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-sm text-sm px-5 py-2.5 focus:outline-none"
                 onClick={handleNext}
               >
                 {"Next >"}
@@ -283,7 +278,7 @@ export default function UjianPage() {
                     }
                   });
                 }}
-                className="m-1 uppercase cursor-pointer text-white bg-green-500 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-sm text-sm px-3 py-2 focus:outline-none "
+                className="m-1 uppercase cursor-pointer text-white bg-green-500 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-sm text-sm px-3 py-2 focus:outline-none"
               >
                 selesai
               </button>

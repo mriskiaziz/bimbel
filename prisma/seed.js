@@ -29,10 +29,7 @@ async function main() {
     data: {
       id: uuidv4(), // Menetapkan UUID secara manual
       soal: "Apa ibu kota Indonesia?",
-      opsiA: "Jakarta",
-      opsiB: "Bali",
-      opsiC: "Surabaya",
-      opsiD: "Bandung",
+      opsi: ["Jakarta", "Bali", "Surabaya", "Bandung"], // Array opsi
       jawabanBenar: "Jakarta",
       gambarUrl: "", // Tidak ada gambar
       paketId: paket.id,

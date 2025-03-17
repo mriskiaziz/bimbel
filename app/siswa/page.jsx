@@ -32,7 +32,7 @@ export default function AdminPage() {
       <div className=" flex justify-center items-center w-full md:w-96 p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
         <a href="#">
           <h5 className="mb-2 text-2xl text-center font-bold tracking-tight text-gray-900 dark:text-white">
-            Selamat Datang Di Simulasi Ujian CAT
+            Selamat Datang <br /> Di Simulasi Ujian CAT
           </h5>
         </a>
       </div>

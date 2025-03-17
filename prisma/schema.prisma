@@ -32,10 +32,7 @@ model Soal {
   paketId      String
   kategoriId   String
   soal         String
-  opsiA        String
-  opsiB        String
-  opsiC        String
-  opsiD        String
+  opsi         String[] // Mengubah dari opsiA, opsiB, opsiC, opsiD menjadi opsi array
   jawabanBenar String
   gambarUrl    String? // Kolom gambar_url
   paket        PaketSoal    @relation(fields: [paketId], references: [id])

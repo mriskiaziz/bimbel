@@ -55,6 +55,7 @@ export const authOptions = {
         token.id = user.id;
         token.role = user.role;
         token.image = user.image;
+        token.name = user.nama;
         token.accessToken = user.access_token;
       }
 
@@ -65,6 +66,7 @@ export const authOptions = {
       session.accessToken = token.accessToken;
       session.user.role = token.role;
       session.user.image = token.image;
+      session.user.name = token.name;
 
       return session;
     },

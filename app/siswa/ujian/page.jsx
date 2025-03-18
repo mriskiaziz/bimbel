@@ -74,9 +74,19 @@ export default function UjianPage() {
     return () => clearInterval(timerId);
   }, [endTime]);
 
-  const handleSubmit = () => {
-    console.log(answers);
-    console.log(kunciJawaban);
+  const handleSubmit = async () => {
+    let benar = kunciJawaban.filter(
+      (value, index) => value == parseInt(answers[index])
+    ).length;
+
+    // try {
+    //   await fetch(`/api/akses/data?model=hasilScore&&id=${dataScore.id}`, {
+    //     method: "PATCH",
+    //     body: { ...dataScore, score: benar },
+    //   });
+    // } catch (error) {
+    //   alert("data gagal dikirimkan");
+    // }
 
     // router.push("/siswa/hasil");
   };

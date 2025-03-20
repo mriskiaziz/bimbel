@@ -20,6 +20,9 @@ export async function POST(request) {
     const collectionName = JSON.parse(formData.get("collection"));
     const file = formData.get("file");
 
+    console.log(collectionName);
+    console.log(data);
+
     const newItem = await prisma[collectionName].create({ data: data });
     return new Response(JSON.stringify(newItem), { status: 201 });
   } catch (error) {

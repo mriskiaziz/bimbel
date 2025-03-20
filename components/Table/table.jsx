@@ -5,7 +5,7 @@ import Image from "next/image";
 export default function TableComponent({ data, columns, action, actionFunct }) {
   return (
     <div>
-      <table id="default-table" className="mt-10">
+      <table id="default-table" className="mt-10 w-full">
         <thead>
           <tr>
             <th scope="col" className="px-2 py-2 border ">

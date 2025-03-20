@@ -5,7 +5,11 @@ import AddDataComponent from "@/components/AddData/addData";
 export default function AdminPage() {
   return (
     <div className="container ">
-      <AddDataComponent listInput={paketSoal} collectionName={`paketSoal`} />
+      <AddDataComponent
+        listInput={paketSoal}
+        collectionName={`paketSoal`}
+        url="/admin/soal"
+      />
     </div>
   );
 }
@@ -16,25 +20,5 @@ const paketSoal = [
     type: "text",
     label: "Nama Paket",
     key: "namaPaket",
-  },
-  {
-    name: "kategoriId",
-    type: "select",
-    label: "Kategori ID",
-    key: "kategoriId",
-    api: "kategoriSoal",
-    indicator: "namaKategori",
-  },
-  {
-    name: "jumlahSoal",
-    type: "number",
-    label: "Jumlah Soal",
-    key: "jumlahSoal",
-  },
-  {
-    name: "tanggalBerakhir",
-    type: "datetime",
-    label: "Tanggal Berakhir",
-    key: "tanggalBerakhir",
   },
 ];

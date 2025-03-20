@@ -90,7 +90,7 @@ function LayoutAdmin({ children }) {
                   } flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-blue-200 dark:hover:bg-gray-700 group`}
                 >
                   {e.icon}
-                  <span className="ms-3">{e.text}</span>
+                  <span className="ms-3 capitalize ">{e.text}</span>
                 </a>
               </li>
             ))}
@@ -109,24 +109,24 @@ function LayoutAdmin({ children }) {
 
 const navbar_list = [
   {
-    text: "kategori soal",
-    link: "/admin",
-    icon: <MdCategory size={22} />,
-  },
-  {
     text: "akun",
-    link: "/admin/akun",
+    link: "/admin",
     icon: <IoPerson size={22} />,
   },
   {
-    text: "soal",
-    link: "/admin/soal",
-    icon: <MdQuestionAnswer size={22} />,
+    text: "kategori soal",
+    link: "/admin/kategori-soal",
+    icon: <MdCategory size={22} />,
   },
   {
     text: "paket soal",
     link: "/admin/paket-soal",
     icon: <SiPacker size={22} />,
+  },
+  {
+    text: "ujian",
+    link: "/admin/ujian",
+    icon: <MdQuestionAnswer size={22} />,
   },
   {
     text: "hasil score",

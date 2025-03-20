@@ -2,7 +2,11 @@
 import { useState, useEffect } from "react";
 import TableComponent from "../Table/table";
 
-export default function AddDataComponent({ listInput, collectionName }) {
+export default function AddDataComponent({
+  listInput,
+  collectionName,
+  url = false,
+}) {
   const [forms, setForms] = useState({});
   const [loadingUpload, setLoadingUpload] = useState(false);
   const [isPostData, setIsPostData] = useState(false);
@@ -21,16 +25,18 @@ export default function AddDataComponent({ listInput, collectionName }) {
         return acc;
       }, {});
 
-      collectionName === "dataDiri" ? setForms(data[0]) : setForms(initialFormState);
+      collectionName === "dataDiri"
+        ? setForms(data[0])
+        : setForms(initialFormState);
 
       // Check if any input requires a dynamic select
-      const selectInputs = listInput.filter(input => input.type === "select");
+      const selectInputs = listInput.filter((input) => input.type === "select");
       for (const input of selectInputs) {
         if (input.api != "role") {
-        const apiRes = await fetch(`/api/items?collectionName=${input.api}`);
-        const apiData = await apiRes.json();
-        setSelectOptions(prev => ({ ...prev, [input.name]: apiData }));
-      }
+          const apiRes = await fetch(`/api/items?collectionName=${input.api}`);
+          const apiData = await apiRes.json();
+          setSelectOptions((prev) => ({ ...prev, [input.name]: apiData }));
+        }
       }
     };
 
@@ -101,7 +107,9 @@ export default function AddDataComponent({ listInput, collectionName }) {
       <form onSubmit={handleSubmit} className="grid md:gap-4 md:grid-cols-3">
         {listInput.map((input, index) => (
           <div
-            className={`mb-4 md:mb-0 ${input.type === "textarea" && "md:col-span-3"}`}
+            className={`mb-4 md:mb-0 ${
+              input.type === "textarea" && "md:col-span-3"
+            }`}
             key={index}
           >
             <label
@@ -115,7 +123,9 @@ export default function AddDataComponent({ listInput, collectionName }) {
                 id={input.name}
                 name={input.name}
                 value={forms[input.name] || ""}
-                onChange={(e) => setForms({ ...forms, [input.name]: e.target.value })}
+                onChange={(e) =>
+                  setForms({ ...forms, [input.name]: e.target.value })
+                }
                 className="w-full h-44 p-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder={`Masukkan ${input.name}`}
               />
@@ -124,21 +134,23 @@ export default function AddDataComponent({ listInput, collectionName }) {
                 id={input.name}
                 name={input.name}
                 value={forms[input.name] || ""}
-                onChange={(e) => setForms({ ...forms, [input.name]: e.target.value })}
+                onChange={(e) =>
+                  setForms({ ...forms, [input.name]: e.target.value })
+                }
                 className="w-full p-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Pilih {input.name}</option>
-                {
-                  input.api == "role" ? (
-                    ["admin", "siswa"].map((option, idx) => (
-                      <option key={idx} value={option}>{option}</option>
+                {input.api == "role"
+                  ? ["admin", "siswa"].map((option, idx) => (
+                      <option key={idx} value={option}>
+                        {option}
+                      </option>
                     ))
-                  ) : (
-                    selectOptions[input.name]?.map((option, idx) => (
-                      <option key={idx} value={option.id}>{option[input.indicator]}</option>
-                    ))
-                  )
-                }
+                  : selectOptions[input.name]?.map((option, idx) => (
+                      <option key={idx} value={option.id}>
+                        {option[input.indicator]}
+                      </option>
+                    ))}
               </select>
             ) : (
               <input
@@ -146,7 +158,9 @@ export default function AddDataComponent({ listInput, collectionName }) {
                 id={input.name}
                 name={input.name}
                 value={forms[input.name] || ""}
-                onChange={(e) => setForms({ ...forms, [input.name]: e.target.value })}
+                onChange={(e) =>
+                  setForms({ ...forms, [input.name]: e.target.value })
+                }
                 className="w-full p-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder={`Masukkan ${input.name}`}
               />
@@ -183,6 +197,14 @@ export default function AddDataComponent({ listInput, collectionName }) {
                 >
                   Delete
                 </button>
+                {url && (
+                  <a
+                    href={url}
+                    className="bg-blue-500 text-white p-2 mr-2 cursor-pointer"
+                  >
+                    Show
+                  </a>
+                )}
               </td>
             )}
           />

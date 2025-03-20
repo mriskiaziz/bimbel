@@ -32,3 +32,47 @@ export async function GET(req) {
     });
   }
 }
+
+export async function POST(req) {
+  try {
+    const model = "soal";
+
+    const body = await req.json();
+    const newData = await prisma[model].create({ data: body });
+
+    return new Response(JSON.stringify(newData), { status: 201 });
+  } catch (error) {
+    console.error(error);
+    return new Response(JSON.stringify({ error: "Terjadi kesalahan" }), {
+      status: 500,
+    });
+  }
+}
+
+export async function PATCH(req) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const model = "soal";
+
+    const id = searchParams.get("id");
+    if (!id)
+      return new Response(JSON.stringify({ error: "ID diperlukan" }), {
+        status: 400,
+      });
+
+    const body = await req.json();
+
+    // Update data akun pengguna
+    const updatedData = await prisma[model].update({
+      where: { id },
+      data: body,
+    });
+
+    return new Response(JSON.stringify(updatedData), { status: 200 });
+  } catch (error) {
+    console.error(error);
+    return new Response(JSON.stringify({ error: "Terjadi kesalahan" }), {
+      status: 500,
+    });
+  }
+}

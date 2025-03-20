@@ -3,6 +3,7 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { IoPersonSharp } from "react-icons/io5";
 import { useRouter } from "next/navigation";
+import Swal from "sweetalert2";
 
 export default function AdminPage() {
   const { data } = useSession();
@@ -60,7 +61,19 @@ export default function AdminPage() {
         <div className=" flex w-full">
           <button
             onClick={() => {
-              handleClick();
+              Swal.fire({
+                title: "Mulai Ujian",
+                text: "Anda Yakin Akan Ingin Mulai Ujian Ini ?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, Mulai",
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  handleClick();
+                }
+              });
             }}
             className="inline-flex cursor-pointer w-full justify-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
           >

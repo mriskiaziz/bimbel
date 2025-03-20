@@ -8,23 +8,28 @@ generator client {
 }
 
 model KategoriSoal {
-  id           String      @id @default(uuid()) // ID menggunakan UUID
+  id           String  @id @default(uuid()) // ID menggunakan UUID
   namaKategori String
   deskripsi    String?
-  paketSoals   PaketSoal[]
   soals        Soal[] // Menambahkan relasi dengan Soal
 }
 
 model PaketSoal {
-  id              String       @id @default(uuid()) // ID menggunakan UUID
-  namaPaket       String
-  kategoriId      String
-  jumlahSoal      Int
-  tanggalDibuat   DateTime     @default(now())
-  tanggalBerakhir DateTime?
-  kategori        KategoriSoal @relation(fields: [kategoriId], references: [id])
-  soals           Soal[]
-  hasilScores     HasilScore[]
+  id            String       @id @default(uuid()) // ID menggunakan UUID
+  namaPaket     String
+  tanggalDibuat DateTime     @default(now())
+  soals         Soal[]
+  hasilScores   HasilScore[]
+  exams         Exam[]
+}
+
+model Exam {
+  id       String       @id @default(uuid()) // ID menggunakan UUID
+  paketId  String
+  duration String
+  siswaId  String
+  siswa    AkunPengguna @relation(fields: [siswaId], references: [id])
+  paket    PaketSoal    @relation(fields: [paketId], references: [id])
 }
 
 model Soal {
@@ -48,6 +53,7 @@ model AkunPengguna {
   nama          String
   tanggalDaftar DateTime     @default(now())
   hasilScores   HasilScore[]
+  exams         Exam[]
 }
 
 enum Role {

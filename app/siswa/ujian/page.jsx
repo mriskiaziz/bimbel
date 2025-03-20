@@ -79,16 +79,19 @@ export default function UjianPage() {
       (value, index) => value == parseInt(answers[index])
     ).length;
 
-    // try {
-    //   await fetch(`/api/akses/data?model=hasilScore&&id=${dataScore.id}`, {
-    //     method: "PATCH",
-    //     body: { ...dataScore, score: benar },
-    //   });
-    // } catch (error) {
-    //   alert("data gagal dikirimkan");
-    // }
-
-    // router.push("/siswa/hasil");
+    try {
+      await fetch(`/api/akses/data?model=hasilScore&&id=${dataScore.id}`, {
+        method: "PATCH",
+        body: JSON.stringify({
+          ...dataScore,
+          tanggal: new Date(),
+          score: (benar / kunciJawaban.length) * 100,
+        }),
+      });
+      router.push("/siswa/hasil");
+    } catch (error) {
+      alert("data gagal dikirimkan");
+    }
   };
 
   const handleAnswerChange = (questionIndex, selectedIndex) => {

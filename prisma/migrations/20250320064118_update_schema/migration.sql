@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Exam" ALTER COLUMN "duration" SET DATA TYPE TEXT;

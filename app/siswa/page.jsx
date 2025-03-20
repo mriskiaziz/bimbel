@@ -26,8 +26,8 @@ export default function AdminPage() {
 
   const handleClick = async () => {
     const res = await fetch(`/api/exam?siswaId=${globalData.siswaId}`);
-    console.log(res);
-
+    const resjson = await res.json();
+    console.log(resjson);
     // router.push(`/siswa/ujian`);
   };
 

@@ -8,6 +8,7 @@ import Swal from "sweetalert2";
 export default function AdminPage() {
   const { data } = useSession();
   const [globalData, setglobalData] = useState(null);
+  const [exam, setexam] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -18,6 +19,10 @@ export default function AdminPage() {
         );
         const resjson = await res.json();
         setglobalData(resjson);
+
+        const temp = await fetch(`/api/exam?siswaId=${resjson.id}`);
+        const tempjson = await temp.json();
+        setexam(tempjson);
       }
     };
 
@@ -25,10 +30,28 @@ export default function AdminPage() {
   }, [data]);
 
   const handleClick = async () => {
-    const res = await fetch(`/api/exam?siswaId=${globalData.siswaId}`);
-    const resjson = await res.json();
-    console.log(resjson);
-    // router.push(`/siswa/ujian`);
+    if (globalData) {
+      const score = await fetch(`/api/score?siswaId=${globalData.id}`);
+      if (!score.ok) {
+        const res = await fetch("/api/akses/data?model=hasilScore", {
+          method: "POST",
+          body: JSON.stringify({
+            siswaId: globalData.id,
+            paketId: exam.paketId,
+            score: 0,
+            tanggal: new Date(new Date().getTime() + exam.duration * 60000),
+          }),
+        });
+
+        if (res.ok) {
+          console.log("berhasil");
+        }
+      } else {
+        console.log("gagal");
+      }
+    }
+
+    router.push(`/siswa/ujian`);
   };
 
   return (
@@ -58,6 +81,13 @@ export default function AdminPage() {
             </div>
           </div>
         )}
+      </div>
+
+      <div className=" flex flex-col w-full md:w-96 p-6 space-y-8 py-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+        <div className="flex flex-col w-full items-center space-y-4 ">
+          <div className=" text-lg font-bold">Durasi</div>
+          <div className=" font-medium">{exam && exam.duration} menit</div>
+        </div>
       </div>
 
       <div className=" flex flex-col w-full md:w-96 p-6 space-y-8 py-8 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">

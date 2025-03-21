@@ -60,6 +60,7 @@ export default function AdminPage() {
       });
       if (res.ok) {
         reset();
+        setIsPostData(!isPostData);
       }
     } else {
       getid &&
@@ -68,9 +69,8 @@ export default function AdminPage() {
           body: JSON.stringify(form),
         }));
       reset();
+      setIsPostData(!isPostData);
     }
-
-    setIsPostData(!isPostData);
   };
 
   const handleOpsiChange = (index, value) => {
@@ -262,7 +262,7 @@ export default function AdminPage() {
                     </div>
                   </td>
                   {columns.map((col, i) => (
-                    <td key={i} className="border p-2 ">
+                    <td key={i} className="border p-2  ">
                       {col.key === "imageUrl" ? (
                         item.imageUrl ? (
                           <Image
@@ -276,7 +276,7 @@ export default function AdminPage() {
                         )
                       ) : col.key === "opsi" ? (
                         item[col.key].map((e, j) => (
-                          <div className=" text-nowrap" key={j}>
+                          <div className="w-96" key={j}>
                             {nomorKeAbjad(j)} {"."} {e} <br />
                           </div>
                         ))
@@ -284,6 +284,8 @@ export default function AdminPage() {
                         <div className=" text-center">
                           {nomorKeAbjad(parseInt(item[col.key]))}
                         </div>
+                      ) : col.key === "soal" ? (
+                        <div className="w-96">{item[col.key]}</div>
                       ) : (
                         item[col.key]
                       )}
